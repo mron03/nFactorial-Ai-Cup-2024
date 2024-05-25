@@ -1,9 +1,9 @@
 # nFactorial-Ai-Cup-2024
 Fork this repository and build nFactorial Ai Cup 2024 projects 
 
-## < Your Name >
+## < Mansur >
 
-## < Your App's Name >
+## < AI Bot Restaurant Manager >
 
 ## < Your App's description, technical considerations, etc. >
 
