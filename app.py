@@ -24,11 +24,121 @@ configure_logging()
 app = Flask(__name__)
 load_dotenv()
 
+# Environment Variables
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 client = OpenAI(api_key=OPENAI_API_KEY)
 ZILLIZ_URI = os.getenv("ZILLIZ_URI")
 ZILLIZ_USER = os.getenv("ZILLIZ_USER")
 ZILLIZ_PASSWORD = os.getenv("ZILLIZ_PASSWORD")
+DB_NAME = os.getenv("DB_NAME")
+DB_USER = os.getenv("DB_USER")
+DB_PASS = os.getenv("DB_PASS")
+DB_HOST = os.getenv("DB_HOST")
+DB_PORT = os.getenv("DB_PORT")
+ACCOUNT_SID = os.getenv("ACCOUNT_SID")
+AUTH_TOKEN = os.getenv("AUTH_TOKEN")
+
+
+MANAGER_NUMBER = "77010999911"
+BOT_NUMBER = "+77778889221"
+try:
+    conn = psycopg2.connect(
+        dbname=DB_NAME,
+        user=DB_USER,
+        password=DB_PASS,
+        host=DB_HOST,
+        port=DB_PORT
+    )
+    logging.info('=========================CONNECTED TO DB POSTGRE=============================')
+except Exception:
+    logging.info('=====================NOT CONNECTED TO POSTGRE SERVER=========================')
+
+def store_order(user_id, order_details, order_date):
+    """Stores an order in the database."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    query = """
+    INSERT INTO Orders (UserID, OrderDetails, OrderDate)
+    VALUES (%s, %s, %s)
+    """
+    cursor.execute(query, (user_id, order_details, order_date))
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+def store_complaint(user_id, complaint_text, complaint_date):
+    """Stores a complaint in the database."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    query = """
+    INSERT INTO Complaints (UserID, ComplaintText, Date)
+    VALUES (%s, %s, %s)
+    """
+    cursor.execute(query, (user_id, complaint_text, complaint_date))
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+def store_review(user_id, review_text, review_date):
+    """Stores a review in the database."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    query = """
+    INSERT INTO Feedback (UserID, FeedbackText, Date)
+    VALUES (%s, %s, %s)
+    """
+    cursor.execute(query, (user_id, review_text, review_date))
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+def store_suggestion(user_id, suggestion_text, suggestion_date):
+    """Stores a suggestion in the database."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    query = """
+    INSERT INTO Suggestions (UserID, SuggestionText, Date)
+    VALUES (%s, %s, %s)
+    """
+    cursor.execute(query, (user_id, suggestion_text, suggestion_date))
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+# Global Variables
+conversation_histories = {}
+
+def get_db_connection():
+    """Establishes and returns a connection to the PostgreSQL database."""
+    return psycopg2.connect(
+        dbname=DB_NAME,
+        user=DB_USER,
+        password=DB_PASS,
+        host=DB_HOST,
+        port=DB_PORT
+    )
+
+def get_db():
+    """Connects to the Milvus vector database and returns the connection object."""
+    logging.info("Connecting Zilliz")
+    embeddings = OpenAIEmbeddings()
+    database = Milvus(
+        embedding_function=embeddings,
+        collection_name="Answers",      
+        connection_args={
+            "uri": ZILLIZ_URI,
+            "user": ZILLIZ_USER,
+            "password": ZILLIZ_PASSWORD,
+            "secure": True,
+        },
+        drop_old=False
+    )
+    logging.info("Success Zilliz Connection")
+    return database
 
 
 def generate_answer(query, user_id):
