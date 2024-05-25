@@ -10,7 +10,8 @@ This project is an AI chatbot that uses gpt to answer customer queries.
 Further the dialog summary is sent to manager in a concise format.
 This bot is very useful for business that have high load of people messages. Since employees do not have time to answer all of them, my solution helps to automatize this process, which leads to better customer satisfaction.
 
-The bot is used using Twilio API to host whatsapp account, ngrok, and ec2 instance on amazon. Also Postgres server hosted on amazon is used to store user feedbacks, complaints and suggestions.
+The bot is used using Twilio API to host whatsapp account, ngrok, and ec2 instance on amazon. Also Postgres server hosted on amazon is used to store user feedbacks, complaints and suggestions. Zilliz for vector database, to store the information needed for the bot to answer queries.
+
 Main functionalities:
 1. Booking of table
 2. Ordering of food
@@ -25,6 +26,8 @@ For managers to be able to ask for report and summaries, they should send specif
 "опиши отзывы" - summary of feedbacks
 "опиши жалобы" - summary of complaints
 "опиши предложения" - summary of suggestions
+
+I used Ocean Basket restaurant as an example how this bot could be used, I stored menu and information about Ocean Basket to illustrate the functionalities of bot. 
 
 
 ## Typeform to submit:
