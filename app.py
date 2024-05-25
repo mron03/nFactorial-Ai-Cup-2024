@@ -140,7 +140,19 @@ def get_db():
     logging.info("Success Zilliz Connection")
     return database
 
+def clear_old_conversations():
+    """Clears conversations that are older than 4 hours."""
+    current_time = datetime.now()
+    cutoff_time = current_time - timedelta(hours=4)
+    global conversation_histories
 
+    for user_id, conversations in list(conversation_histories.items()):
+        conversation_histories[user_id] = [msg for msg in conversations if msg[0] > cutoff_time]
+        if not conversation_histories[user_id]:
+            del conversation_histories[user_id]
+    
+    logging.info("Old conversations cleared.")
+    
 def generate_answer(query, user_id):
     """Generates an answer for a given query using the GPT model."""
 
